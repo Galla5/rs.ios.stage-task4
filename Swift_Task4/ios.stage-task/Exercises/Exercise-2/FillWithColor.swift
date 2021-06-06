@@ -5,7 +5,7 @@ final class FillWithColor {
     func fillWithColor(_ image: [[Int]], _ row: Int, _ column: Int, _ newColor: Int) -> [[Int]] {
         var resultImage = image
         let currectColor = image[row][column]
-        let allPoints = getAllPoints(image, row, column)
+        let allPoints = getAllPoints(image, row, column, newColor, currectColor)
         for point in allPoints {
             resultImage = fillPointPixels(resultImage, point.0, point.1, newColor, currectColor)
         }
@@ -13,36 +13,44 @@ final class FillWithColor {
         return resultImage
     }
     
-    private func getAllPoints(_ image: [[Int]], _ row: Int, _ column: Int) -> [(Int, Int)] {
+    private func getAllPoints(_ image: [[Int]], _ row: Int, _ column: Int, _ newColor: Int, _ currentColor: Int) -> [(Int, Int)] {
         var allPoints = [(Int, Int)]()
         let startPoint = (row, column)
         allPoints.append(startPoint)
-        let firstDirectionalyPoints = getDirectionallyPoints(image, point: (row, column))
+        let firstDirectionalyPoints = getDirectionallyPoints(image, point: (row, column), newColor, currentColor)
         allPoints.append(contentsOf: firstDirectionalyPoints)
         for dicPoint in firstDirectionalyPoints {
-            let secondPoints = getDirectionallyPoints(image, point: dicPoint)
+            let secondPoints = getDirectionallyPoints(image, point: dicPoint, newColor, currentColor)
             allPoints.append(contentsOf: secondPoints)
         }
         return allPoints
     }
     
-    private func getDirectionallyPoints(_ image: [[Int]], point: (Int, Int)) -> [(Int, Int)] {
+    private func getDirectionallyPoints(_ image: [[Int]], point: (Int, Int), _ newColor: Int, _ currentColor: Int) -> [(Int, Int)] {
         var points = [(Int, Int)]()
         
         if point.0 - 1 >= 0 {
-            points.append((point.0 - 1, point.1))
+            if image[point.0 - 1][point.1] == currentColor {
+                points.append((point.0 - 1, point.1))
+            }
         }
         
         if point.0 + 1 <= image.count - 1 {
-            points.append((point.0 + 1, point.1))
+            if image[point.0 + 1][point.1] == currentColor {
+                points.append((point.0 + 1, point.1))
+            }
         }
         
         if point.1 - 1 >= 0 {
-            points.append((point.0, point.1 - 1))
+            if image[point.0][point.1 - 1] == currentColor {
+                points.append((point.0, point.1 - 1))
+            }
         }
         
         if point.1 + 1 <= image[point.0].count - 1 {
-            points.append((point.0, point.1 + 1))
+            if image[point.0][point.1 + 1] == currentColor {
+                points.append((point.0, point.1 + 1))
+            }
         }
         
         return points
